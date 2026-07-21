@@ -71,7 +71,7 @@ Think of it as the meeting point between "I need my car fixed" and "I can fix yo
 |---|---|
 | **Frontend** | React + Next.js |
 | **Backend** | Node.js + Express.js |
-| **Database** | PostgreSQL / MySQL |
+| **Database** | PostgreSQL |
 | **ORM** | Prisma |
 
 ---
