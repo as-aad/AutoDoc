@@ -28,6 +28,15 @@ const garages = [
     rating: 4.9,
     totalReviews: 42,
     image: "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&auto=format&fit=crop&q=80"
+  },
+  {
+    id: "gar-3",
+    name: "Horizon Motorsport & Tuning Garage",
+    address: "880 Velocity Way, Eugene, OR",
+    phone: "+1 (555) 789-0123",
+    rating: 5.0,
+    totalReviews: 0,
+    image: "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=500&auto=format&fit=crop&q=80"
   }
 ];
 
@@ -53,6 +62,17 @@ const mechanics = [
     rating: 4.95,
     totalReviews: 23,
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
+  },
+  {
+    id: "mech-3",
+    userId: "u-mech-3",
+    garageId: "gar-3",
+    garageName: "Horizon Motorsport & Tuning Garage",
+    name: "Elena Rostova",
+    specialization: "Track Setup & Suspension Calibration",
+    rating: 5.0,
+    totalReviews: 0,
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&auto=format&fit=crop&q=80"
   }
 ];
 
@@ -66,9 +86,9 @@ const vehicles = [
     vin: "5YJ3E1EA8NF982314",
     licensePlate: "7XYZ99",
     currentMileage: 28450,
-    healthScore: 92,
+    healthScore: 97,
     image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=600&auto=format&fit=crop&q=80",
-    lastServicedAt: "2026-06-15T10:00:00Z"
+    lastServicedAt: "2026-07-20T17:00:00Z"
   },
   {
     id: "veh-2",
@@ -102,7 +122,7 @@ const serviceBookings = [
     mileageAtService: 28450,
     scheduledDate: "2026-06-15T10:00:00Z",
     completedAt: "2026-06-15T15:45:00Z",
-    isRated: false
+    isRated: true
   },
   {
     id: "bk-102",
@@ -121,6 +141,24 @@ const serviceBookings = [
     scheduledDate: "2026-05-10T14:30:00Z",
     completedAt: "2026-05-10T18:00:00Z",
     isRated: true
+  },
+  {
+    id: "bk-103",
+    vehicleId: "veh-1",
+    vehicleInfo: "2022 Tesla Model 3 Performance",
+    customerId: "cust-1",
+    garageId: "gar-3",
+    garageName: "Horizon Motorsport & Tuning Garage",
+    mechanicId: "mech-3",
+    mechanicName: "Elena Rostova",
+    serviceType: "Coilover Suspension Tuning & Laser Alignment",
+    description: "Installed active dampening coilover suspension kit and completed 4-wheel laser alignment.",
+    status: "COMPLETED",
+    cost: 650.00,
+    mileageAtService: 28450,
+    scheduledDate: "2026-07-20T10:00:00Z",
+    completedAt: "2026-07-20T17:00:00Z",
+    isRated: false
   }
 ];
 
@@ -142,6 +180,31 @@ const reviews = [
 ];
 
 const maintenanceReports = [
+  {
+    id: "rep-3",
+    vehicleId: "veh-1",
+    bookingId: "bk-103",
+    serviceDate: "2026-07-20T17:00:00Z",
+    garageName: "Horizon Motorsport & Tuning Garage",
+    mechanicName: "Elena Rostova",
+    overallHealthScore: 97,
+    summary: "Coilover suspension installation and laser wheel alignment complete. Corner balancing verified.",
+    systemHealth: {
+      batteryAndPower: { score: 98, status: "GOOD", notes: "Cell voltage balanced. High voltage cable shields intact." },
+      brakes: { score: 97, status: "GOOD", notes: "Regen braking calibrated with new suspension height." },
+      transmissionDrive: { score: 95, status: "GOOD", notes: "Dual motor torque vectoring tested." },
+      suspensionSteering: { score: 99, status: "GOOD", notes: "New KW V3 Coilover system dampening tuned." },
+      electricalElectronics: { score: 96, status: "GOOD", notes: "Track mode telemetry active." },
+      tiresFluids: { score: 92, status: "GOOD", notes: "New Michelin Pilot Sport EV tires mounted & balanced." }
+    },
+    replacedParts: [
+      { name: "KW V3 Performance Coilover Suspension Kit", partNumber: "KW-3522-001", cost: 480.00, warranty: "3 Years" },
+      { name: "Laser 4-Wheel Alignment & Corner Balancing", partNumber: "SRV-ALIGN-PRO", cost: 170.00, warranty: "1 Year" }
+    ],
+    mechanicNotes: "Suspension drop set to 15mm. Ride quality tested on highway and tight cornering.",
+    invoiceNumber: "INV-2026-0720-09",
+    totalPaid: 650.00
+  },
   {
     id: "rep-1",
     vehicleId: "veh-1",
