@@ -25,6 +25,17 @@ Think of it as the meeting point between "I need my car fixed" and "I can fix yo
 
 ---
 
+## 👥 Contributors
+
+| Name | Student ID |
+|------|------------|
+| As-aad Chowdhury | 23101396 |
+| Tanha Zaman | 23101199 |
+| Nabil Mahmud | 24301576 |
+| Ahmed Abu Nahiyan | 22201735 |
+
+---
+
 ## ✨ Features
 
 ### 🔐 Authentication & User Management
