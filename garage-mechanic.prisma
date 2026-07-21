@@ -1,0 +1,35 @@
+// ---------------------------------------------
+// M3 — Garage/Mechanic Operations models
+// Paste these into the shared schema.prisma
+// Coordinate with the team before pushing (schema.prisma is shared!)
+// ---------------------------------------------
+
+model Garage {
+  id          String     @id @default(cuid())
+  name        String
+  address     String
+  phone       String
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  mechanics   Mechanic[]
+}
+
+model Mechanic {
+  id                String    @id @default(cuid())
+
+  // Link to M1's User model — confirm field name matches their schema
+  userId            String    @unique
+  user              User      @relation(fields: [userId], references: [id])
+
+  garageId          String?
+  garage            Garage?   @relation(fields: [garageId], references: [id])
+
+  certificationUrl  String?
+  isVerified        Boolean   @default(false)
+  verifiedAt        DateTime?
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}

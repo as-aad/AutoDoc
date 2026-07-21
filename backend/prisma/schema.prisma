@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  role      Role      @default(CUSTOMER)
+  createdAt DateTime  @default(now())
+
+  mechanic        Mechanic?
+  Vehicle         Vehicle[]
+  serviceRequests ServiceRequest[]
+}
+
+model Reminder {
+  id        String   @id @default(cuid())
+  vehicleId String
+  title     String
+  dueDate   DateTime
+  completed Boolean  @default(false)
+  createdAt DateTime @default(now())
+  Vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+model Vehicle {
+  id              String            @id @default(cuid())
+  ownerId         String
+  make            String
+  model           String
+  year            Int
+  licensePlate    String            @unique
+  vin             String?           @unique
+  color           String?
+  mileage         Int               @default(0)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  Reminder        Reminder[]
+  User            User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  VehicleDocument VehicleDocument[]
+  serviceRequests ServiceRequest[]
+
+  @@index([ownerId])
+}
+
+model VehicleDocument {
+  id         String       @id @default(cuid())
+  vehicleId  String
+  type       DocumentType
+  fileName   String
+  fileUrl    String
+  mimeType   String
+  sizeBytes  Int
+  uploadedAt DateTime     @default(now())
+  Vehicle    Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+}
+
+model ServiceRequest {
+  id          String    @id @default(cuid())
+  customerId  String
+  vehicleId   String
+  description String
+  photoUrl    String?
+  status      String    @default("OPEN")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  customer    User       @relation(fields: [customerId], references: [id])
+  vehicle     Vehicle    @relation(fields: [vehicleId], references: [id])
+  quotes      Quote[]
+
+  @@index([customerId])
+  @@index([vehicleId])
+}
+
+model Quote {
+  id              String       @id @default(cuid())
+  serviceRequestId String
+  garageId        String
+  price           Float
+  notes           String?
+  status          String       @default("PENDING")
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  serviceRequest  ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  garage          Garage         @relation(fields: [garageId], references: [id])
+
+  @@index([serviceRequestId])
+  @@index([garageId])
+}
+
+model Garage {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mechanics Mechanic[]
+  quotes    Quote[]
+}
+
+model Mechanic {
+  id               String    @id @default(cuid())
+  userId           String    @unique
+  user             User      @relation(fields: [userId], references: [id])
+  garageId         String?
+  garage           Garage?   @relation(fields: [garageId], references: [id])
+  certificationUrl String?
+  isVerified       Boolean   @default(false)
+  verifiedAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+enum DocumentType {
+  REGISTRATION
+  INSURANCE
+  IMAGE
+  OTHER
+}
+
+enum Role {
+  CUSTOMER
+  MECHANIC
+  GARAGE_OWNER
+  ADMIN
+}

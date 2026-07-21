@@ -1,0 +1,30 @@
+{
+  "name": "autodoc-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch app.js",
+    "start": "node app.js",
+    "setup": "npm install && npm run db:sync && npm run db:seed",
+    "db:migrate": "prisma db push",
+    "db:sync": "prisma db push",
+    "db:deploy": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:ensure-admin": "node prisma/ensure-admin-tables.js",
+    "db:generate": "prisma generate",
+    "db:seed": "node prisma/seed.js",
+    "db:studio": "prisma studio"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  }
+}
