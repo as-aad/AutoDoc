@@ -1,0 +1,21 @@
+{
+  "name": "autodoc",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vehicle Maintenance & Repair Marketplace",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=apps/api\" \"npm run dev --workspace=apps/web\"",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "db:push": "npm run db:push --workspace=packages/prisma",
+    "db:seed": "npm run db:seed --workspace=packages/prisma",
+    "build": "npm run build --workspace=apps/web"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
