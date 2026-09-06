@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  MECHANIC
+  GARAGE
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id               String   @id @default(uuid())
+  name             String
+  email            String   @unique
+  passwordHash     String?
+  role             Role     @default(CUSTOMER)
+  phone            String?
+  avatarUrl        String?
+  location         String?
+  status           String   @default("active")
+  suspensionReason String?
+  createdAt        DateTime @default(now())
+
+  cartItems CartItem[]
+  orders    Order[]
+}
+
+model Product {
+  id            String   @id @default(uuid())
+  name          String
+  description   String
+  priceCents    Int
+  category      String
+  image         String?
+  stockQuantity Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id                      String      @id @default(uuid())
+  userId                  String
+  user                    User        @relation(fields: [userId], references: [id])
+  status                  OrderStatus @default(PENDING)
+  totalCents              Int
+  stripeCheckoutSessionId String?     @unique
+  stripePaymentIntentId   String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id                   String  @id @default(uuid())
+  orderId              String
+  order                Order   @relation(fields: [orderId], references: [id])
+  productId            String
+  product              Product @relation(fields: [productId], references: [id])
+  quantity             Int
+  priceCentsAtPurchase Int
+}
+
+model ServiceBooking {
+  id        String   @id @default(uuid())
+  invoice   Invoice?
+}
+
+model Invoice {
+  id                String         @id @default(uuid())
+  bookingId         String         @unique
+  booking           ServiceBooking @relation(fields: [bookingId], references: [id])
+  invoiceNumber     String         @unique
+  laborCostCents    Int
+  partsCostJson     String?        // JSON string: [{ "name": "Brake pads", "costCents": 250000 }]
+  totalCents        Int
+  warrantyMonths    Int            @default(0)
+  warrantyExpiresAt DateTime?
+  pdfUrl            String?
+  issuedByUserId    String         // the garage owner who generated it
+  issuedAt          DateTime       @default(now())
+}
+
