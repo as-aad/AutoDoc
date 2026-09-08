@@ -5,7 +5,7 @@ import { initDatabase, sql } from '@/lib/db';
 export async function getGarage(id: string): Promise<Garage | null> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/garages`, { cache: 'no-store' });
+      const res = await fetch(`/api/garages`, { next: { revalidate: 60 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) {
         const match = data.data.find((g: Garage) => g.id === id);
@@ -26,7 +26,7 @@ export async function getGarage(id: string): Promise<Garage | null> {
 export async function getGarageByOwner(ownerId: string): Promise<Garage | null> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/garage/profile?ownerId=${encodeURIComponent(ownerId)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/garage/profile?ownerId=${encodeURIComponent(ownerId)}`, { next: { revalidate: 60 } });
       const data = await res.json();
       if (data.success && data.data) return data.data;
     } catch (e) {
@@ -59,7 +59,7 @@ export async function updateGarageProfile(data: Partial<Garage> & { ownerId?: st
 export async function getInvoice(id: string): Promise<Invoice | null> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/bookings/${id}/invoice`, { cache: 'no-store' });
+      const res = await fetch(`/api/bookings/${id}/invoice`, { next: { revalidate: 60 } });
       const result = await res.json();
       if (result.success && result.data) return result.data;
     } catch (e) {
@@ -207,7 +207,7 @@ export async function submitReview(
 export async function getGarageReviews(garageId: string): Promise<{ rating: number; reviewCount: number; reviews: Review[] }> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/reviews?garageId=${encodeURIComponent(garageId)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/reviews?garageId=${encodeURIComponent(garageId)}`, { next: { revalidate: 30 } });
       const result = await res.json();
       if (result.success && result.data) return result.data;
     } catch (e) {

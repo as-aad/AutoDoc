@@ -3,7 +3,16 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { unoptimized: true },
+  // ── Performance: enable image optimization (WebP conversion, responsive sizes)
+  images: {
+    domains: ['images.unsplash.com', 'bolt.new'],
+    formats: ['image/webp', 'image/avif'],
+  },
+  // ── Performance: enable gzip/brotli compression
+  compress: true,
+  // ── Performance: use SWC minifier for faster builds & smaller bundles
+  swcMinify: true,
+  poweredByHeader: false,
   webpack: (config, { dev, isServer }) => {
     if (dev) {
       config.watchOptions = {

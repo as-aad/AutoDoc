@@ -6,7 +6,23 @@ const databaseUrl =
 
 export const sql = neon(databaseUrl);
 
-export async function initDatabase() {
+// ─── Singleton guard ────────────────────────────────────────────────────────
+// initDatabase() used to run 30+ DDL queries on EVERY request.
+// Now the schema-init work runs exactly once per server process lifetime.
+let _dbReady = false;
+let _dbInitPromise: Promise<boolean> | null = null;
+
+export async function initDatabase(): Promise<boolean> {
+  if (_dbReady) return true;
+  if (_dbInitPromise) return _dbInitPromise;
+  _dbInitPromise = _runInitDatabase().then((ok) => {
+    _dbReady = ok;
+    return ok;
+  });
+  return _dbInitPromise;
+}
+
+async function _runInitDatabase(): Promise<boolean> {
   try {
     // --- AUTHENTICATION & USERS TABLE ---
     await sql`

@@ -6,7 +6,7 @@ import { initDatabase, sql } from '@/lib/db';
 export async function getRequests(ownerId: string): Promise<ServiceRequest[]> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/requests?ownerId=${encodeURIComponent(ownerId)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/requests?ownerId=${encodeURIComponent(ownerId)}`, { next: { revalidate: 30 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) return data.data;
     } catch (e) {
@@ -21,7 +21,7 @@ export async function getRequests(ownerId: string): Promise<ServiceRequest[]> {
 export async function getRequest(id: string): Promise<ServiceRequest | null> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/requests/${id}`, { cache: 'no-store' });
+      const res = await fetch(`/api/requests/${id}`, { next: { revalidate: 15 } });
       const data = await res.json();
       if (data.success && data.data) return data.data;
     } catch (e) {
@@ -65,7 +65,7 @@ export async function getOpenRequestsNearby(
 ): Promise<ServiceRequest[]> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch('/api/requests', { cache: 'no-store' });
+      const res = await fetch('/api/requests', { next: { revalidate: 30 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) return data.data;
     } catch (e) {
@@ -79,7 +79,7 @@ export async function getOpenRequestsNearby(
 export async function getBookings(customerId: string): Promise<Booking[]> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/bookings?customerId=${encodeURIComponent(customerId)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/bookings?customerId=${encodeURIComponent(customerId)}`, { next: { revalidate: 15 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) return data.data;
     } catch (e) {
@@ -97,7 +97,7 @@ export async function getBookingsByGarage(
 ): Promise<Booking[]> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/bookings?garageId=${encodeURIComponent(garageId)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/bookings?garageId=${encodeURIComponent(garageId)}`, { next: { revalidate: 15 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) return data.data;
     } catch (e) {
@@ -115,7 +115,7 @@ export async function getBookingsByMechanic(
 ): Promise<Booking[]> {
   if (typeof window !== 'undefined') {
     try {
-      const res = await fetch(`/api/bookings?role=mechanic&userId=${encodeURIComponent(mechanicName)}`, { cache: 'no-store' });
+      const res = await fetch(`/api/bookings?role=mechanic&userId=${encodeURIComponent(mechanicName)}`, { next: { revalidate: 15 } });
       const data = await res.json();
       if (data.success && Array.isArray(data.data)) return data.data;
     } catch (e) {
@@ -132,7 +132,7 @@ export async function getBooking(id: string): Promise<Booking | null> {
     try {
       const res = await fetch(`/api/bookings/${id}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success && data.data) return data.data;
+      if (data.success && data.data) return data.data; // keep no-store — booking detail is real-time
     } catch (e) {
       console.warn('getBooking client fetch error:', e);
     }
@@ -227,7 +227,7 @@ export async function getBookingMessages(bookingId: string): Promise<BookingMess
     try {
       const res = await fetch(`/api/bookings/${bookingId}/messages`, { cache: 'no-store' });
       const result = await res.json();
-      if (result.success && Array.isArray(result.data)) return result.data;
+      if (result.success && Array.isArray(result.data)) return result.data; // keep no-store — messages are real-time
     } catch (err) {
       console.error('getBookingMessages fetch error:', err);
     }

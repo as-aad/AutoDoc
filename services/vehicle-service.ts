@@ -3,17 +3,44 @@ import { VehicleModel } from '@/models/vehicle.model';
 import { initDatabase } from '@/lib/db';
 
 export async function getVehicles(ownerId: string): Promise<Vehicle[]> {
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch(`/api/vehicles?ownerId=${encodeURIComponent(ownerId)}`, { next: { revalidate: 30 } });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) return data.data;
+    } catch (e) {
+      console.warn('getVehicles client fetch error:', e);
+    }
+  }
   await initDatabase();
   if (!ownerId) return [];
   return VehicleModel.findByOwnerId(ownerId);
 }
 
 export async function getVehicle(id: string): Promise<Vehicle | null> {
+  if (typeof window !== 'undefined') {
+    try {
+      const res = await fetch(`/api/vehicles/${id}`, { next: { revalidate: 30 } });
+      const data = await res.json();
+      if (data.success && data.data) return data.data;
+    } catch (e) {
+      console.warn('getVehicle client fetch error:', e);
+    }
+  }
   await initDatabase();
   return VehicleModel.findById(id);
 }
 
 export async function createVehicle(data: Partial<Vehicle>): Promise<Vehicle> {
+  if (typeof window !== 'undefined') {
+    const res = await fetch('/api/vehicles', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (result.success && result.data) return result.data;
+  }
   await initDatabase();
 
   return VehicleModel.create({
@@ -30,11 +57,25 @@ export async function createVehicle(data: Partial<Vehicle>): Promise<Vehicle> {
 }
 
 export async function updateVehicle(id: string, data: Partial<Vehicle>): Promise<Vehicle | null> {
+  if (typeof window !== 'undefined') {
+    const res = await fetch(`/api/vehicles/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    if (result.success && result.data) return result.data;
+  }
   await initDatabase();
   return VehicleModel.findById(id);
 }
 
 export async function deleteVehicle(id: string): Promise<boolean> {
+  if (typeof window !== 'undefined') {
+    const res = await fetch(`/api/vehicles/${id}`, { method: 'DELETE' });
+    const result = await res.json();
+    return result.success ?? false;
+  }
   await initDatabase();
   return VehicleModel.delete(id);
 }
