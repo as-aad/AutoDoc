@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Figtree, Archivo } from 'next/font/google';
 import { RoleProvider } from '@/lib/role-context';
 import { Toaster } from '@/components/ui/toaster';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const figtree = Figtree({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({
           {children}
           <Toaster />
         </RoleProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
